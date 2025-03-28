@@ -1,0 +1,36 @@
+name: "[SHOP-FIVEM] Linter and Format Code"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  workflow_dispatch:
+
+jobs:
+  format:
+    name: Linter and Format Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies And Compile
+        run: bun install
+
+      - name: Run Lint Fix code
+        run: bun run lintfix
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "style: fix lint and format code"
+          default_author: github_actions
